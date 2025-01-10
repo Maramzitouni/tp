@@ -2,23 +2,31 @@
   "name": "blockchain",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "@wagmi/connectors": "latest",
-    "@wagmi/core": "latest",
+    "@tanstack/react-query": "5.45.1",
+    "next": "^14.2.23",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "viem": "latest"
+    "viem": "latest",
+    "wagmi": "latest"
   },
   "devDependencies": {
+    "@types/node": "^20.12.10",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
     "@wagmi/cli": "latest",
-    "buffer": "^6.0.3",
+    "bufferutil": "^4.0.8",
+    "encoding": "^0.1.13",
+    "lokijs": "^1.5.12",
+    "pino-pretty": "^10.3.1",
+    "supports-color": "^9.4.0",
     "typescript": "^5.4.5",
-    "vite": "^5.2.11"
+    "utf-8-validate": "^5.0.2"
   }
 }
