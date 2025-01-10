@@ -1,17 +1,25 @@
 "use client";
 
-import { useAccount, useConnect, useDisconnect, usePublicClient } from "wagmi";
-import { useState } from "react";
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  usePublicClient,
+  useSwitchChain,
+} from "wagmi";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 function App() {
-  const account = useAccount();
+  const { address, chain, isConnected } = useAccount();
   const { connectors, connect, status, error } = useConnect();
   const { disconnect } = useDisconnect();
   const publicClient = usePublicClient();
+  const { switchChain, error: switchError } = useSwitchChain();
+  const [isSwitching, setIsSwitching] = useState(false);
 
   const [chainInfo, setChainInfo] = useState<{
-    blockNumber: number | null;
+    blockNumber: bigint | null;
     blockHash: string | null;
     gasUsed: string | null;
     gasPrice: string | null;
@@ -35,7 +43,7 @@ function App() {
         : "N/A";
 
       setChainInfo({
-        blockNumber: latestBlock.number,
+        blockNumber: BigInt(latestBlock.number),
         blockHash: latestBlock.hash,
         gasUsed: latestBlock.gasUsed.toString(),
         gasPrice: gasPrice.toString(),
@@ -46,19 +54,38 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    if (chain && chain.id !== 1 && chain.id !== 11155111) {
+      alert(
+        `You are connected to the wrong chain (ID: ${chain.id}). Please switch to Ethereum Mainnet or Sepolia.`
+      );
+    }
+  }, [chain]);
+
+  const handleSwitchChain = async (chainId: 1 | 11155111) => {
+    setIsSwitching(true);
+    try {
+      await switchChain({ chainId });
+    } catch (error) {
+      console.error("Error switching chain:", error);
+    } finally {
+      setIsSwitching(false);
+    }
+  };
+
   return (
     <>
       <div>
         <h2>Account</h2>
         <div>
-          Status: {account.status}
+          Status: {isConnected ? "Connected" : "Not connected"}
           <br />
-          Address: {account.address ?? "Not connected"}
+          Address: {address ?? "Not connected"}
           <br />
-          Chain ID: {account.chain?.id ?? "Not available"}
+          Chain ID: {chain?.id ?? "Not available"}
         </div>
 
-        {account.status === "connected" && (
+        {isConnected && (
           <button type="button" onClick={() => disconnect()}>
             Disconnect
           </button>
@@ -79,7 +106,7 @@ function App() {
         <div>Error: {error?.message}</div>
       </div>
 
-      {account.status === "connected" && (
+      {isConnected && (
         <div>
           <h2>Chain Info</h2>
           <button onClick={fetchChainInfo} type="button">
@@ -106,6 +133,26 @@ function App() {
                 <Link href="/send-tx">Send Transaction</Link>
               </li>
             </ul>
+          )}
+
+          {chain && (
+            <div style={{ marginTop: "1rem" }}>
+              <button
+                onClick={() => handleSwitchChain(1)}
+                disabled={isSwitching || chain.id === 1}>
+                {chain.id === 1 ? "On Mainnet" : "Switch to Mainnet"}
+              </button>
+              <button
+                onClick={() => handleSwitchChain(11155111)}
+                disabled={isSwitching || chain.id === 11155111}>
+                {chain.id === 11155111 ? "On Sepolia" : "Switch to Sepolia"}
+              </button>
+              {switchError && (
+                <p style={{ color: "red" }}>
+                  Unable to switch chain: {switchError.message}
+                </p>
+              )}
+            </div>
           )}
         </div>
       )}
