@@ -2,11 +2,11 @@
   "name": "blockchain",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@subsquid/evm-abi": "^0.3.1",
@@ -16,6 +16,8 @@
     "@subsquid/typeorm-store": "^1.5.1",
     "@wagmi/connectors": "latest",
     "@wagmi/core": "latest",
+    "@tanstack/react-query": "5.45.1",
+    "next": "^14.2.23",
     "dotenv": "^16.4.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -28,10 +30,21 @@
     "@wagmi/cli": "latest",
     "buffer": "^6.0.3",
     "typescript": "^5.7.3",
-    "vite": "^5.2.11"
+    "vite": "^5.2.11",
+    "@types/node": "^20.12.10",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@wagmi/cli": "latest",
+    "bufferutil": "^4.0.8",
+    "encoding": "^0.1.13",
+    "lokijs": "^1.5.12",
+    "pino-pretty": "^10.3.1",
+    "supports-color": "^9.4.0",
+    "utf-8-validate": "^5.0.2"
   },
   "main": "index.js",
   "author": "",
   "license": "ISC",
   "description": ""
+  },
 }

@@ -1,16 +1,28 @@
-import { coinbaseWallet, injected, walletConnect } from '@wagmi/connectors'
-import { http, createConfig } from '@wagmi/core'
-import { mainnet, sepolia } from '@wagmi/core/chains'
+import { http, cookieStorage, createConfig, createStorage } from 'wagmi'
+import { mainnet, sepolia } from 'wagmi/chains'
+import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors'
 
-export const config = createConfig({
-  chains: [mainnet, sepolia],
-  connectors: [
-    injected(),
-    coinbaseWallet(),
-    walletConnect({ projectId: import.meta.env.VITE_WC_PROJECT_ID }),
-  ],
-  transports: {
-    [mainnet.id]: http(),
-    [sepolia.id]: http(),
-  },
-})
+export function getConfig() {
+  return createConfig({
+    chains: [mainnet, sepolia],
+    connectors: [
+      injected(),
+      coinbaseWallet(),
+      walletConnect({ projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID }),
+    ],
+    storage: createStorage({
+      storage: cookieStorage,
+    }),
+    ssr: true,
+    transports: {
+      [mainnet.id]: http(),
+      [sepolia.id]: http(),
+    },
+  })
+}
+
+declare module 'wagmi' {
+  interface Register {
+    config: ReturnType<typeof getConfig>
+  }
+}
