@@ -2,6 +2,7 @@
 
 import { useAccount, useConnect, useDisconnect, usePublicClient } from "wagmi";
 import { useState } from "react";
+import Link from "next/link";
 
 function App() {
   const account = useAccount();
@@ -100,6 +101,9 @@ function App() {
               </li>
               <li>
                 <strong>Burnt Fees (wei):</strong> {chainInfo.burntFees}
+              </li>
+              <li>
+                <Link href="/send-tx">Send Transaction</Link>
               </li>
             </ul>
           )}
